@@ -661,7 +661,7 @@
      )
    )
   (:angle-vector-sequence-full-with-bspline
-   (jpos tm bspline-recursive-order bspline-id-max bspline-x-min bspline-x-max bspline-p
+   (jpos tm bspline-recursive-order bspline-id-max bspline-x-min bspline-x-hit bspline-x-max bspline-p
          &key
          (sequence-length (length jpos))
          (joint-length (length (car jpos)))
@@ -683,6 +683,7 @@
       bspline-recursive-order: bspline-recursive-order []
       bspline-id-max: bspline index max []
       bspline-x-min: bspline starting time [s]
+      bspline-x-hit: bspline hitting time [s]
       bspline-x-max: bspline finishing time [s]
       bspline-p: flattened bspline control points []
 
@@ -703,6 +704,7 @@
    (let* ((bsorder (instance std_msgs::int32 :init))
           (bsid (instance std_msgs::int32 :init))
           (bsxmin (instance std_msgs::float64 :init))
+          (bsxhit (instance std_msgs::float64 :init))
           (bsxmax (instance std_msgs::float64 :init))
           (p (instance std_msgs::float64array :init))
           (jvss (instance std_msgs::float64multiarray :init))
@@ -721,6 +723,8 @@
      (send bsid :data bspline-id-max)
      ;; bstmin
      (send bstmin :data bspline-x-min)
+     ;; bsthit
+     (send bsthit :data bspline-x-hit)
      ;; bstmax
      (send bstmax :data bspline-x-max)
      ;; p
@@ -781,7 +785,7 @@
                                    (instance std_msgs::multiArraydimension :init :label "optional length" :size (nth 1 (array-dimensions optional)) :stride (nth 1 (array-dimensions optional)))))
      (send optionals :data (array-entity optional))
 
-     (send self :sequenceplayerservice_setjointanglessequencefullwithbspline :bsorder bsorder :bsid bsid :bstmin bstmin :bstmax bstmax :bsp bsp :jvss jvss :vels vels :torques torques :poss poss :rpys rpys :accs accs :zmps zmps :wrenchs wrenchs :optionals optionals :tms tms)
+     (send self :sequenceplayerservice_setjointanglessequencefullwithbspline :bsorder bsorder :bsid bsid :bstmin bstmin :bsthit bsthit :bstmax bstmax :bsp bsp :jvss jvss :vels vels :torques torques :poss poss :rpys rpys :accs accs :zmps zmps :wrenchs wrenchs :optionals optionals :tms tms)
      )
    )
   )
