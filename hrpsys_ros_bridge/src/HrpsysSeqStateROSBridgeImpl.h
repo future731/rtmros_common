@@ -162,6 +162,8 @@ class HrpsysSeqStateROSBridgeImpl  : public RTC::DataFlowComponentBase
 
   // DataOutPort declaration
   // <rtc-template block="outport_declare">
+  TimedPoint3D m_hitTarget;
+  OutPort<TimedPoint3D> m_hitTargetOut;
   TimedDoubleSeq m_mctorque;
   OutPort<TimedDoubleSeq> m_mctorqueOut;
 

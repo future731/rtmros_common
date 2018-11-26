@@ -69,6 +69,7 @@ HrpsysSeqStateROSBridge::HrpsysSeqStateROSBridge(RTC::Manager* manager) :
   // is use_sim_time is set and no one publishes clock, publish clock time
   use_sim_time = ros::Time::isSimTime();
   clock_sub = nh.subscribe("/clock", 1, &HrpsysSeqStateROSBridge::clock_cb, this);
+  hit_target_sub = nh.subscribe("/estimated_ball_point", 1, &HrpsysSeqStateROSBridge::hit_target_cb, this);
   { // wait ...
     ros::WallDuration wtm(0, 500000000);
     wtm.sleep();
@@ -511,6 +512,9 @@ RTC::ReturnCode_t HrpsysSeqStateROSBridge::onExecute(RTC::UniqueId ec_id)
       joint_state.effort.resize(joint_state.name.size());
     }
     joint_state_pub.publish(joint_state);
+
+    m_hitTarget.tm = m_servoState.tm;
+
     m_mutex.unlock();
 
     // publish sensor transformations
@@ -904,6 +908,30 @@ RTC::ReturnCode_t HrpsysSeqStateROSBridge::onExecute(RTC::UniqueId ec_id)
 
   //
   return RTC::RTC_OK;
+}
+
+void HrpsysSeqStateROSBridge::hit_target_cb(const ball_orbit_estimator::PosAndVelWithCovarianceStamped& ball_state)
+{
+  m_mutex.lock();
+#warning temporary
+  double x = ball_state.point.x;
+  double y = ball_state.point.y;
+  double z = ball_state.point.z;
+  double vx = ball_state.velocity.x;
+  double vy = ball_state.velocity.y;
+  double vz = ball_state.velocity.z;
+  double ttc = -x / vx;
+  double target_x = x + vx * ttc;
+  double target_y = y + vy * ttc;
+  const double GRAVITY_Z = -9.8;
+  double target_z = z + vz * ttc + GRAVITY_Z / 2.0 * ttc * ttc;
+  m_hitTarget.data.x = target_x;
+  m_hitTarget.data.y = target_y;
+  m_hitTarget.data.z = target_z;
+  if (ttc > 0.0) {
+    m_hitTargetOut.write();
+  }
+  m_mutex.unlock();
 }
 
 void HrpsysSeqStateROSBridge::periodicTimerCallback(const ros::TimerEvent& event)

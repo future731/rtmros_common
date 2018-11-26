@@ -33,6 +33,7 @@
 #include "diagnostic_msgs/DiagnosticArray.h"
 #include "sensor_msgs/Imu.h"
 #include "hrpsys_ros_bridge/SetSensorTransformation.h"
+#include "ball_orbit_estimator/PosAndVelWithCovarianceStamped.h"
 
 extern const char* hrpsysseqstaterosbridgeimpl_spec[];
 
@@ -81,11 +82,13 @@ class HrpsysSeqStateROSBridge  : public HrpsysSeqStateROSBridgeImpl
   std::string rootlink_name;
 
   ros::Subscriber clock_sub;
+  ros::Subscriber hit_target_sub;
 
   nav_msgs::Odometry prev_odom;
   bool prev_odom_acquired;
   hrp::Vector3 prev_rpy;
   void clock_cb(const rosgraph_msgs::ClockPtr& str) {};
+  void hit_target_cb(const ball_orbit_estimator::PosAndVelWithCovarianceStamped& str);
 
   bool follow_action_initialized;
   ros::Time traj_start_tm;

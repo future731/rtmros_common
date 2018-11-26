@@ -44,6 +44,7 @@ HrpsysSeqStateROSBridgeImpl::HrpsysSeqStateROSBridgeImpl(RTC::Manager* manager)
     m_refContactStatesIn("refContactStates", m_refContactStates),
     m_actContactStatesIn("actContactStates", m_actContactStates),
     m_controlSwingSupportTimeIn("controlSwingSupportTime", m_controlSwingSupportTime),
+    m_hitTargetOut("hitTarget", m_hitTarget),
     m_mctorqueOut("mctorque", m_mctorque),
     m_SequencePlayerServicePort("SequencePlayerService")
 
@@ -78,6 +79,7 @@ RTC::ReturnCode_t HrpsysSeqStateROSBridgeImpl::onInitialize()
   addInPort("controlSwingSupportTime", m_controlSwingSupportTimeIn);
 
   // Set OutPort buffer
+  addOutPort("hitTargetIn", m_hitTargetOut);
   addOutPort("mctorque", m_mctorqueOut);
 
   // Set service provider to Ports
