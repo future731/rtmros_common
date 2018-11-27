@@ -910,7 +910,7 @@ RTC::ReturnCode_t HrpsysSeqStateROSBridge::onExecute(RTC::UniqueId ec_id)
   return RTC::RTC_OK;
 }
 
-void HrpsysSeqStateROSBridge::hit_target_cb(const ball_orbit_estimator::PosAndVelWithCovarianceStamped& ball_state)
+void HrpsysSeqStateROSBridge::hit_target_cb(const ball_state_msgs::PosAndVelWithCovarianceStamped& ball_state)
 {
   m_mutex.lock();
 #warning temporary
