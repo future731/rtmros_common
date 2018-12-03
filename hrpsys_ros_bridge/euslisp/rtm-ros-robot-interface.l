@@ -701,12 +701,12 @@
       pos: sequence of waist pos(float-vector) [mm] in the world frame,  (list pos0 pos1 ... posn). If root-coords is specified, calculated from root-coords and do not set pos.
       rpy: sequence of waist rpy(float-vector) [rad] in the world frame,  (list rpy0 rpy1 ... rpyn). If root-coords is specified, calculated from root-coords and do not set rpy.
       root-local-zmp: sequence of zmp in the waist(root-link) frame (float-vector) [mm],  (list zmp0 zmp1 ... zmpn). If root-coords and zmp are specified, calculated from root-coords and zmp and do not set root-local-zmp."
-   (let* ((bsorder (instance std_msgs::int32 :init))
-          (bsid (instance std_msgs::int32 :init))
-          (bsxmin (instance std_msgs::float64 :init))
-          (bsxhit (instance std_msgs::float64 :init))
-          (bsxmax (instance std_msgs::float64 :init))
-          (p (instance std_msgs::float64array :init))
+   (let* ((bsorder bspline-recursive-order)
+          (bsid bspline-id-max)
+          (bstmin bspline-x-min)
+          (bsthit bspline-x-hit)
+          (bstmax bspline-x-max)
+          (bsp bspline-p)
           (jvss (instance std_msgs::float64multiarray :init))
           (vels (instance std_msgs::float64multiarray :init))
           (torques (instance std_msgs::float64multiarray :init))
@@ -717,19 +717,6 @@
           (wrenchs (instance std_msgs::float64multiarray :init))
           (optionals (instance std_msgs::float64multiarray :init))
           (tms (coerce (mapcar #'(lambda (ttm) (* 1e-3 ttm)) tm) float-vector))) ;; [ms]->[s], list -> float-vector
-     ;; bsorder
-     (send bsorder :data bspline-recursive-order)
-     ;; bsid
-     (send bsid :data bspline-id-max)
-     ;; bstmin
-     (send bstmin :data bspline-x-min)
-     ;; bsthit
-     (send bsthit :data bspline-x-hit)
-     ;; bstmax
-     (send bstmax :data bspline-x-max)
-     ;; p
-     (send p :layout :dim (length bspline-p))
-     (send p :data bspline-p)
      ;; jvss
      (let ((jvs (apply #'matrix (mapcar #'(lambda (x) (map float-vector #'deg2rad x)) jpos)))) ;; [deg] -> [rad]
        (send jvss :layout :dim (list
