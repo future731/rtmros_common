@@ -706,7 +706,7 @@
           (bstmin bspline-x-min)
           (bsthit bspline-x-hit)
           (bstmax bspline-x-max)
-          (bsp bspline-p)
+          (bsp (let (b) (setq b (map float-vector #'deg2rad bspline-p)) (setf (aref b (- (length b) 1))  (aref bspline-p (- (length bspline-p) 1))) b)) ;; basically deg2rad, but timing var scale is 1
           (jvss (instance std_msgs::float64multiarray :init))
           (vels (instance std_msgs::float64multiarray :init))
           (torques (instance std_msgs::float64multiarray :init))
