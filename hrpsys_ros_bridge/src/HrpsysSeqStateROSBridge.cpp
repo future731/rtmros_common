@@ -65,11 +65,11 @@ HrpsysSeqStateROSBridge::HrpsysSeqStateROSBridge(RTC::Manager* manager) :
   mot_states_pub = nh.advertise<hrpsys_ros_bridge::MotorStates>("/motor_states", 1);
   odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 1);
   imu_pub = nh.advertise<sensor_msgs::Imu>("/imu", 1);
+  hit_target_sub = nh.subscribe("/pointgrey/estimated_ball_state", 1, &HrpsysSeqStateROSBridge::onHitTargetCB, this);
 
   // is use_sim_time is set and no one publishes clock, publish clock time
   use_sim_time = ros::Time::isSimTime();
   clock_sub = nh.subscribe("/clock", 1, &HrpsysSeqStateROSBridge::clock_cb, this);
-  hit_target_sub = nh.subscribe("/estimated_ball_point", 1, &HrpsysSeqStateROSBridge::hit_target_cb, this);
   { // wait ...
     ros::WallDuration wtm(0, 500000000);
     wtm.sleep();
@@ -910,10 +910,9 @@ RTC::ReturnCode_t HrpsysSeqStateROSBridge::onExecute(RTC::UniqueId ec_id)
   return RTC::RTC_OK;
 }
 
-void HrpsysSeqStateROSBridge::hit_target_cb(const ball_state_msgs::PosAndVelWithCovarianceStamped& ball_state)
+void HrpsysSeqStateROSBridge::onHitTargetCB(const ball_state_msgs::PosAndVelWithCovarianceStamped& ball_state)
 {
   m_mutex.lock();
-#warning temporary
   double x = ball_state.point.x;
   double y = ball_state.point.y;
   double z = ball_state.point.z;
@@ -930,6 +929,8 @@ void HrpsysSeqStateROSBridge::hit_target_cb(const ball_state_msgs::PosAndVelWith
   m_hitTarget.data.z = target_z;
   if (ttc > 0.0) {
     m_hitTargetOut.write();
+  } else {
+    std::cerr << "ttc is " << ttc << std::endl;
   }
   m_mutex.unlock();
 }

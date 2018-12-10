@@ -55,6 +55,7 @@ class HrpsysSeqStateROSBridge  : public HrpsysSeqStateROSBridgeImpl
   void onFollowJointTrajectoryActionGoal();
   void onFollowJointTrajectoryActionPreempt();
   void onTrajectoryCommandCB(const trajectory_msgs::JointTrajectoryConstPtr& msg);
+  void onHitTargetCB(const ball_state_msgs::PosAndVelWithCovarianceStamped& str);
   bool sendMsg (dynamic_reconfigure::Reconfigure::Request &req,
                 dynamic_reconfigure::Reconfigure::Response &res);
   bool setSensorTransformation(hrpsys_ros_bridge::SetSensorTransformation::Request& req,
@@ -88,7 +89,6 @@ class HrpsysSeqStateROSBridge  : public HrpsysSeqStateROSBridgeImpl
   bool prev_odom_acquired;
   hrp::Vector3 prev_rpy;
   void clock_cb(const rosgraph_msgs::ClockPtr& str) {};
-  void hit_target_cb(const ball_state_msgs::PosAndVelWithCovarianceStamped& str);
 
   bool follow_action_initialized;
   ros::Time traj_start_tm;

@@ -31,6 +31,7 @@
   <arg name="USE_OBJECTCONTACTTURNAROUNDDETECTOR" default="false" />
   <arg name="USE_HRPSYS_PROFILE" default="true" />
   <arg name="USE_VELOCITY_OUTPUT" default="false" doc="true: output actual velocity / false: output differential value of actual postition as /joint_states/velocity"/>
+  <arg name="USE_BSPLINE_CORRECTION" default="true" />
   <arg name="PUBLISH_SENSOR_TF" default="true" />
   <!--
       roslaunch hrpsys_ros_bridge sample.launch nameserver:=192.168.1.1
@@ -290,6 +291,12 @@
 
     <rtconnect from="$(arg SIMULATOR_NAME).rtc:left-eye" to="ImageSensorROSBridge0.rtc:image" />
     <rtactivate component="ImageSensorROSBridge0.rtc" />
+  </group>
+  <!-- USE_BSPLINE_CORRECTION
+       bspline hit target corrector
+  -->
+  <group if="$(arg USE_BSPLINE_CORRECTION)" >
+      <rtconnect from="HrpsysSeqStateROSBridge0.rtc:hitTargetOut" to="seq.rtc:hitTargetIn" subscription_type="new"/>
   </group>
 
   <!-- END:openrtm connection -->
