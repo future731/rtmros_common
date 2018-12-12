@@ -295,9 +295,11 @@
   <!-- USE_BSPLINE_CORRECTION
        bspline hit target corrector
   -->
-  <group if="$(arg USE_BSPLINE_CORRECTION)" >
+  <!--group if="$(arg USE_BSPLINE_CORRECTION)">
       <rtconnect from="HrpsysSeqStateROSBridge0.rtc:hitTargetOut" to="seq.rtc:hitTargetIn" subscription_type="new"/>
-  </group>
+  </group-->
+  <!-- TODO: if sentense -->
+      <rtconnect from="HrpsysSeqStateROSBridge0.rtc:hitTargetOut" to="seq.rtc:hitTargetIn" subscription_type="new"/>
 
   <!-- END:openrtm connection -->
 
