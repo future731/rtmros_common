@@ -919,7 +919,10 @@ void HrpsysSeqStateROSBridge::onHitTargetCB(const ball_state_msgs::PosAndVelWith
   double vx = ball_state.velocity.x;
   double vy = ball_state.velocity.y;
   double vz = ball_state.velocity.z;
-  double ttc = -x / vx;
+  if (std::hypot(vx, vy) < 1e-1) {
+      std::cerr << "[HrpsysSeqStateROSBridge] horizontal speed is too slow" << std::endl;
+  }
+  double ttc = std::hypot(x, y) / std::hypot(vx, vy);
   double target_x = x + vx * ttc;
   double target_y = y + vy * ttc;
   const double GRAVITY_Z = -9.8;
@@ -930,7 +933,7 @@ void HrpsysSeqStateROSBridge::onHitTargetCB(const ball_state_msgs::PosAndVelWith
   if (ttc > 0.0) {
     m_hitTargetOut.write();
   } else {
-    std::cerr << "ttc is " << ttc << std::endl;
+    std::cerr << "[HrpsysSeqStateROSBridge] ttc is " << ttc << std::endl;
   }
   m_mutex.unlock();
 }
