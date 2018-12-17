@@ -919,10 +919,13 @@ void HrpsysSeqStateROSBridge::onHitTargetCB(const ball_state_msgs::PosAndVelWith
   double vx = ball_state.velocity.x;
   double vy = ball_state.velocity.y;
   double vz = ball_state.velocity.z;
-  if (std::hypot(vx, vy) < 1e-1) {
+  // if (std::hypot(vx, vy) < 1e-1) {
+  if (std::sqrt(vx * vx + vy * vy) < 1e-1) {
       std::cerr << "[HrpsysSeqStateROSBridge] horizontal speed is too slow" << std::endl;
   }
-  double ttc = std::hypot(x, y) / std::hypot(vx, vy);
+  // TODO replace this with std::hypot or something like that
+  // double ttc = std::hypot(x, y) / std::hypot(vx, vy);
+  double ttc = std::sqrt(x * x + y * y) / std::sqrt(vx * vx + vy * vy);
   double target_x = x + vx * ttc;
   double target_y = y + vy * ttc;
   const double GRAVITY_Z = -9.8;
@@ -930,7 +933,23 @@ void HrpsysSeqStateROSBridge::onHitTargetCB(const ball_state_msgs::PosAndVelWith
   m_hitTarget.data.x = target_x;
   m_hitTarget.data.y = target_y;
   m_hitTarget.data.z = target_z;
-  if (ttc > 0.0) {
+  boost::array<double, 36> p = ball_state.pos_and_vel_covariance;
+  // TODO replace this with boost::accumulate or something like that
+  /*
+  std::cerr << "var:" << std::endl;
+  for (int i = 0; i < 6; i++) {
+      for (int j = 0; j < 6; j++) {
+          std::cerr << p[i * 6 + j] << " ";
+      }
+      std::cerr << std::endl;
+  }
+  */
+  double sqsum = 0.0;
+  for (int i = 0; i < 36; i++) {
+      sqsum += p[i] * p[i];
+  }
+#warning 分散共分散行列の評価
+  if (ttc > 0.0 and sqsum < 6.0) {
     m_hitTargetOut.write();
   } else {
     std::cerr << "[HrpsysSeqStateROSBridge] ttc is " << ttc << std::endl;
