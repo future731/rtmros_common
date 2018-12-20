@@ -16,6 +16,7 @@
 #include <rtm/DataInPort.h>
 #include <rtm/DataOutPort.h>
 #include "hrpsys_ros_bridge/idl/HRPDataTypes.hh"
+#include "hrpsys_ros_bridge/idl/SequencePlayerService.hh"
 
 // hrp
 #include <hrpCorba/ModelLoader.hh>
@@ -162,8 +163,8 @@ class HrpsysSeqStateROSBridgeImpl  : public RTC::DataFlowComponentBase
 
   // DataOutPort declaration
   // <rtc-template block="outport_declare">
-  TimedPoint3D m_hitTarget;
-  OutPort<TimedPoint3D> m_hitTargetOut;
+  OpenHRP::TimedPosAndVelWithCovariance m_hitTarget;
+  OutPort<OpenHRP::TimedPosAndVelWithCovariance> m_hitTargetOut;
   TimedDoubleSeq m_mctorque;
   OutPort<TimedDoubleSeq> m_mctorqueOut;
 
