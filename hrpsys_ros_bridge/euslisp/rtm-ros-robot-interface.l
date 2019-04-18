@@ -707,7 +707,8 @@
           (bsthit bspline-x-hit)
           (bstmax bspline-x-max)
           (bsp (let (b)
-                 (setq b bspline-p)
+                 (format t "bspline-p before ~A~%" bspline-p)
+                 (setq b (copy-object bspline-p))
                  (print "TODO: change joint num 33 variable: because of choreonoid THK hand, (length jpos) is sometimes 37.")
                  (dotimes (i (* bspline-id-max 33))
                    (setf (aref b i) (deg2rad (elt bspline-p i))))
@@ -715,6 +716,7 @@
                    (setf (aref b (+ (* bspline-id-max 33) i)) (/ (elt bspline-p (+ (* bspline-id-max 33) i)) 1000.0)))
                  (dotimes (i (* bspline-id-max 3))
                    (setf (aref b (+ (* bspline-id-max (+ 33 3)) i)) (deg2rad (elt bspline-p (+ (* bspline-id-max (+ 33 3)) i)))))
+                 (format t "bspline-p after ~A~%" bspline-p)
                  b)) ;; basically deg2rad, but timing var scale is 1
           (jvss (instance std_msgs::float64multiarray :init))
           (vels (instance std_msgs::float64multiarray :init))
